@@ -5,13 +5,29 @@ const { Pool } = require("pg");
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin:"https://datav1nci.github.io/",
-  methods:"GET, POST, PUT, DELETE",
-  allowedHeaders:"Content-Type,Authorization"
-}));
 
-app.use(cors());
+
+const corsOptions = {
+  origin: "https://datav1nci.github.io", // ✅ Remove trailing slash to match the request origin
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
+  credentials: true, // ✅ If using cookies or authorization headers
+};
+
+app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://datav1nci.github.io");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true"); // ✅ Allow credentials if needed
+  next();
+});
+
+
+// ✅ Handle preflight (OPTIONS) requests manually
+app.options("*", cors(corsOptions)); 
+
 
 // Connect to Neon PostgreSQL
 const pool = new Pool({
