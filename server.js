@@ -5,6 +5,12 @@ const { Pool } = require("pg");
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin:"https://datav1nci.github.io/",
+  methods:"GET, POST, PUT, DELETE",
+  allowedHeaders:"Content-Type,Authorization"
+}));
+
 app.use(cors());
 
 // Connect to Neon PostgreSQL
